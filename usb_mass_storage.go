@@ -182,40 +182,40 @@ var httpRangeReader *httpreadat.RangeReader
 
 func rpcMountWithHTTP(url string, mode VirtualMediaMode) error {
 	virtualMediaStateMutex.Lock()
-	if currentVirtualMediaState != nil {
-		virtualMediaStateMutex.Unlock()
-		return fmt.Errorf("another virtual media is already mounted")
-	}
-	httpRangeReader = httpreadat.New(url)
-	n, err := httpRangeReader.Size()
-	if err != nil {
-		virtualMediaStateMutex.Unlock()
-		return fmt.Errorf("failed to use http url: %w", err)
-	}
-	logger.Infof("using remote url %s with size %d", url, n)
-	currentVirtualMediaState = &VirtualMediaState{
-		Source: HTTP,
-		Mode:   mode,
-		URL:    url,
-		Size:   n,
-	}
+	// if currentVirtualMediaState != nil {
+	// 	virtualMediaStateMutex.Unlock()
+	// 	return fmt.Errorf("another virtual media is already mounted")
+	// }
+	// httpRangeReader = httpreadat.New(url)
+	// n, err := httpRangeReader.Size()
+	// if err != nil {
+	// 	virtualMediaStateMutex.Unlock()
+	// 	return fmt.Errorf("failed to use http url: %w", err)
+	// }
+	// logger.Infof("using remote url %s with size %d", url, n)
+	// currentVirtualMediaState = &VirtualMediaState{
+	// 	Source: HTTP,
+	// 	Mode:   mode,
+	// 	URL:    url,
+	// 	Size:   n,
+	// }
 	virtualMediaStateMutex.Unlock()
 
-	logger.Debug("Starting nbd device")
-	nbdDevice = NewNBDDevice()
-	err = nbdDevice.Start()
-	if err != nil {
-		logger.Errorf("failed to start nbd device: %v", err)
-		return err
-	}
-	logger.Debug("nbd device started")
-	//TODO: replace by polling on block device having right size
-	time.Sleep(1 * time.Second)
-	err = setMassStorageImage("/dev/nbd0")
-	if err != nil {
-		return err
-	}
-	logger.Info("usb mass storage mounted")
+	// logger.Debug("Starting nbd device")
+	// nbdDevice = NewNBDDevice()
+	// err = nbdDevice.Start()
+	// if err != nil {
+	// 	logger.Errorf("failed to start nbd device: %v", err)
+	// 	return err
+	// }
+	// logger.Debug("nbd device started")
+	// //TODO: replace by polling on block device having right size
+	// time.Sleep(1 * time.Second)
+	// err = setMassStorageImage("/dev/nbd0")
+	// if err != nil {
+	// 	return err
+	// }
+	// logger.Info("usb mass storage mounted")
 	return nil
 }
 
